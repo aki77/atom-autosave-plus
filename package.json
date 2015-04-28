@@ -1,0 +1,16 @@
+{
+  "name": "autosave-plus",
+  "main": "./lib/autosave-plus",
+  "version": "0.0.1",
+  "description": "enables auto-saving along with git",
+  "repository": "https://github.com/aki77/autosave-plus",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+    "underscore-plus": "^1.5.0",
+    "fs-plus": "^2.0.0",
+    "temp": "~0.8.1"
+  }
+}
