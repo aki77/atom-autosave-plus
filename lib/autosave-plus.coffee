@@ -29,7 +29,9 @@ module.exports =
       @subscriptions.add disposable
 
     # support autocomplete-plus
-    atom.packages.disablePackage('autosave')
+    unless atom.packages.isPackageDisabled('autosave')
+      atom.packages.disablePackage('autosave')
+
     @subscriptions.add atom.config.observe 'autosave-plus.enabled', (enabled) ->
       atom.config.set('autosave.enabled', enabled, save: false)
 
