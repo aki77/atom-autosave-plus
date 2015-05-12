@@ -3,7 +3,7 @@
   "main": "./lib/main",
   "version": "0.0.0",
   "description": "enables auto-saving along with git",
-  "repository": "https://github.com/aki77/autosave-plus",
+  "repository": "https://github.com/aki77/atom-autosave-plus",
   "license": "MIT",
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
