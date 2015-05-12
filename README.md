@@ -1,5 +1,12 @@
 # autosave-plus package
 
-A short description of your package.
+enables auto-saving along with git.
 
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+Inspired by [auto-save-buffers-enhanced.el](https://github.com/kentaro/auto-save-buffers-enhanced).
+
+## Settings
+
+- `Enabled` (default: true)
+- `Exclude Grammars` (default: ['text.git-commit'])
+- `Debounce Period` (default: 1000)
+- `Include Only Repository Path` (default: true)

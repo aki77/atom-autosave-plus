@@ -10,6 +10,7 @@ module.exports =
         @debouncedSave = _.debounce @_save.bind(@), wait
 
       @subscriptions.add @editor.onDidStopChanging(@changeHandler)
+      @subscriptions.add @editor.onDidDestroy(@destroy)
 
     _save: ->
       return unless atom.config.get 'autosave-plus.enabled'
@@ -24,6 +25,7 @@ module.exports =
 
     destroy: =>
       @subscriptions.dispose()
+      @subscriptions = null
 
     isExcludeScope: (scopeName) ->
       excludeGrammars = atom.config.get 'autosave-plus.excludeGrammars'

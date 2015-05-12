@@ -1,7 +1,7 @@
 {
   "name": "autosave-plus",
-  "main": "./lib/autosave-plus",
-  "version": "0.0.1",
+  "main": "./lib/main",
+  "version": "0.0.0",
   "description": "enables auto-saving along with git",
   "repository": "https://github.com/aki77/autosave-plus",
   "license": "MIT",

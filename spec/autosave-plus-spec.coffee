@@ -20,6 +20,9 @@ describe "AutosavePlus", ->
     fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
     atom.project.setPaths([otherPath, projectPath])
 
+    atom.config.set('autosave-plus.excludeGrammars', ['text.git-commit'])
+    atom.config.set('autosave-plus.enabled', true)
+
     waitsForPromise ->
       atom.packages.activatePackage('autosave')
 
@@ -79,7 +82,6 @@ describe "AutosavePlus", ->
 
     it "does not save the item", ->
       runs ->
-        atom.config.set('autosave-plus.excludeGrammars', ['text.git-commit'])
         commitMsgItem.setText("i am modified")
         advanceClock(commitMsgItem.getBuffer().stoppedChangingDelay)
         expect(commitMsgItem.save).not.toHaveBeenCalled()
@@ -95,8 +97,6 @@ describe "AutosavePlus", ->
     [otherItem] = []
 
     beforeEach ->
-      runs ->
-        atom.config.set('autosave-plus.enabled', true)
       waitsForPromise ->
         atom.workspace.open(path.join(otherPath, 'sample.coffee'))
       runs ->
@@ -112,6 +112,7 @@ describe "AutosavePlus", ->
 
     it "done not save the other item", ->
       runs ->
+        atom.config.set('autosave-plus.includeOnlyRepositoryPath', true)
         otherItem.setText("i am modified")
         advanceClock(otherItem.getBuffer().stoppedChangingDelay)
         expect(otherItem.save).not.toHaveBeenCalled()
