@@ -20,12 +20,20 @@ module.exports =
 
   activate: ->
     @subscriptions = new CompositeDisposable
-    @subscriptions.add atom.workspace.observeTextEditors (editor) ->
-      new Autosave editor
+    @autosaveObjects = new WeakMap
+    @subscriptions.add atom.workspace.observeTextEditors (editor) =>
+      @autosaveObjects.set(editor, new Autosave(editor))
+
     @simulateAutosave()
 
   deactivate: ->
     @subscriptions.dispose()
+    @subscriptions = null
+
+    atom.workspace.getTextEditors().forEach((editor) =>
+      @autosaveObjects.get(editor)?.destroy()
+    )
+    @autosaveObjects = null
 
   # support autocomplete-plus
   simulateAutosave: ->
