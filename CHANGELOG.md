@@ -1,3 +1,6 @@
+## 0.3.0
+* Fix whitespace.ensureSingleTrailingNewline
+
 ## 0.2.0
 * Fix deactivate
 

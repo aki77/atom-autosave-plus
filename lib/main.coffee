@@ -24,6 +24,9 @@ module.exports =
     @subscriptions.add atom.workspace.observeTextEditors (editor) =>
       @autosaveObjects.set(editor, new Autosave(editor))
 
+    @subscriptions.add atom.packages.onDidActivateInitialPackages =>
+      @subscriptions.add(@wrapWhitespace())
+
     @simulateAutosave()
 
   deactivate: ->
@@ -42,3 +45,19 @@ module.exports =
 
     @subscriptions.add atom.config.observe 'autosave-plus.enabled', (enabled) ->
       atom.config.set('autosave.enabled', enabled, save: false)
+
+  wrapWhitespace: ->
+    pack = atom.packages.getLoadedPackage('whitespace')
+    return new Disposable unless pack
+    whitespace = pack.mainModule.whitespace
+    ensureSingleTrailingNewline = whitespace.ensureSingleTrailingNewline
+
+    whitespace.ensureSingleTrailingNewline = (editor) ->
+      buffer = editor.getBuffer()
+      lastRow = buffer.getLastRow()
+      cursorRows = (cursor.getBufferRow() for cursor in editor.getCursors())
+      return if lastRow in cursorRows
+      ensureSingleTrailingNewline(editor)
+
+    new Disposable ->
+      whitespace.ensureSingleTrailingNewline = ensureSingleTrailingNewline
