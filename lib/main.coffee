@@ -1,5 +1,5 @@
+_ = require 'underscore-plus'
 {CompositeDisposable, Disposable} = require 'atom'
-Autosave = require './autosave'
 
 module.exports =
   config:
@@ -11,53 +11,48 @@ module.exports =
       default: ['text.git-commit']
       items:
         type: 'string'
-    debouncePeriod:
-      type: 'integer'
-      default: 1000
     includeOnlyRepositoryPath:
       type: 'boolean'
       default: true
 
   activate: ->
     @subscriptions = new CompositeDisposable
-    @autosaveObjects = new WeakMap
-    @subscriptions.add atom.workspace.observeTextEditors (editor) =>
-      @autosaveObjects.set(editor, new Autosave(editor))
-
+    @subscriptions.add atom.config.observe 'autosave-plus.enabled', (enabled) ->
+      atom.config.set('autosave.enabled', enabled, save: false)
     @subscriptions.add atom.packages.onDidActivateInitialPackages =>
-      @subscriptions.add(@wrapWhitespace())
-
-    @simulateAutosave()
+      @subscriptions.add(@wrapAutosave())
 
   deactivate: ->
     @subscriptions.dispose()
-    @subscriptions = null
 
-    atom.workspace.getTextEditors().forEach((editor) =>
-      @autosaveObjects.get(editor)?.destroy()
+  wrapAutosave: ->
+    pack = atom.packages.enablePackage('autosave')
+    pack.activate()
+    autosave = pack.mainModule
+    original = autosave.autosavePaneItem
+
+    _.adviseBefore(autosave, 'autosavePaneItem', (paneItem) =>
+      @autosavePaneItem(paneItem)
     )
-    @autosaveObjects = null
 
-  # support autocomplete-plus
-  simulateAutosave: ->
-    unless atom.packages.isPackageDisabled('autosave')
-      atom.packages.disablePackage('autosave')
+    new Disposable( -> autosave.autosavePaneItem = original)
 
-    @subscriptions.add atom.config.observe 'autosave-plus.enabled', (enabled) ->
-      atom.config.set('autosave.enabled', enabled, save: false)
+  autosavePaneItem: (paneItem) ->
+    return false if @isExcludeScope(paneItem?.getGrammar?()?.scopeName)
+    return false unless @isIncludeOnlyRepositoryPath(paneItem?.getURI?())
+    return true
 
-  wrapWhitespace: ->
-    pack = atom.packages.getLoadedPackage('whitespace')
-    return new Disposable unless pack
-    whitespace = pack.mainModule.whitespace
-    ensureSingleTrailingNewline = whitespace.ensureSingleTrailingNewline
+  isExcludeScope: (scopeName) ->
+    excludeGrammars = atom.config.get('autosave-plus.excludeGrammars')
+    excludeGrammars.indexOf(scopeName) isnt -1
 
-    whitespace.ensureSingleTrailingNewline = (editor) ->
-      buffer = editor.getBuffer()
-      lastRow = buffer.getLastRow()
-      cursorRows = (cursor.getBufferRow() for cursor in editor.getCursors())
-      return if lastRow in cursorRows
-      ensureSingleTrailingNewline(editor)
+  isIncludeOnlyRepositoryPath: (path) ->
+    unless atom.config.get('autosave-plus.includeOnlyRepositoryPath')
+      return true
+    !!@repositoryForPath(path)
 
-    new Disposable ->
-      whitespace.ensureSingleTrailingNewline = ensureSingleTrailingNewline
+  repositoryForPath: (goalPath) ->
+    for directory, i in atom.project.getDirectories()
+      if goalPath is directory.getPath() or directory.contains(goalPath)
+        return atom.project.getRepositories()[i]
+    null

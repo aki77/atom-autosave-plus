@@ -2,7 +2,7 @@
   "name": "autosave-plus",
   "main": "./lib/main",
   "version": "0.3.0",
-  "description": "enables auto-saving along with git",
+  "description": "Autosave with some extensions",
   "repository": "https://github.com/aki77/atom-autosave-plus",
   "license": "MIT",
   "engines": {

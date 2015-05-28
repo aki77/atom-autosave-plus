@@ -1,3 +1,6 @@
+## 0.4.0
+* rewrite
+
 ## 0.3.0
 * Fix whitespace.ensureSingleTrailingNewline
 
