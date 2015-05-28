@@ -1,3 +1,6 @@
+## 0.4.1
+* changed the default setting
+
 ## 0.4.0
 * rewrite
 

@@ -5,7 +5,7 @@ module.exports =
   config:
     enabled:
       type: 'boolean'
-      default: true
+      default: false
     excludeGrammars:
       type: 'array'
       default: ['text.git-commit']
@@ -13,7 +13,7 @@ module.exports =
         type: 'string'
     includeOnlyRepositoryPath:
       type: 'boolean'
-      default: true
+      default: false
 
   activate: ->
     @subscriptions = new CompositeDisposable
