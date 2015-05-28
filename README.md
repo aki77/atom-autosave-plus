@@ -4,6 +4,6 @@ Autosave with some extensions
 
 ## Settings
 
-- `Enabled` (default: true)
+- `Enabled` (default: false)
 - `Exclude Grammars` (default: ['text.git-commit'])
-- `Include Only Repository Path` (default: true)
+- `Include Only Repository Path` (default: false)
