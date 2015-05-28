@@ -1,6 +1,7 @@
 # autosave-plus package
 
 Autosave with some extensions
+[![Build Status](https://travis-ci.org/aki77/atom-autosave-plus.svg)](https://travis-ci.org/aki77/atom-autosave-plus)
 
 ## Settings
 
