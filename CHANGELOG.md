@@ -1,3 +1,6 @@
+## 0.5
+* Don't autosave if file has been moved or deleted
+
 ## 0.4.1
 * changed the default setting
 

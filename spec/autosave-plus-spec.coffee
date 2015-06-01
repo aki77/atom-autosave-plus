@@ -41,7 +41,8 @@ describe "AutosavePlus", ->
 
     beforeEach ->
       waitsForPromise ->
-        atom.workspace.open(path.join(projectPath, 'COMMIT_EDITMSG'))
+        atom.workspace.open(path.join(projectPath, 'COMMIT_EDITMSG')).then (editor) ->
+          editor.save()
       runs ->
         commitMsgItem = atom.workspace.getActiveTextEditor()
         spyOn(commitMsgItem, 'save').andCallThrough()
@@ -62,7 +63,8 @@ describe "AutosavePlus", ->
 
     beforeEach ->
       waitsForPromise ->
-        atom.workspace.open(path.join(otherPath, 'sample.coffee'))
+        atom.workspace.open(path.join(otherPath, 'sample.coffee')).then (editor) ->
+          editor.save()
       runs ->
         otherItem = atom.workspace.getActiveTextEditor()
         spyOn(otherItem, 'save')
@@ -82,9 +84,32 @@ describe "AutosavePlus", ->
     it "save all item", ->
       atom.config.set('autosave-plus.includeOnlyRepositoryPath', false)
       initialActiveItem.setText("i am modified")
+      expect(initialActiveItem.save).not.toHaveBeenCalled()
       window.dispatchEvent(new FocusEvent('blur'))
       expect(initialActiveItem.save).toHaveBeenCalled()
 
+      expect(otherItem.save).not.toHaveBeenCalled()
       otherItem.setText("i am modified")
       window.dispatchEvent(new FocusEvent('blur'))
       expect(otherItem.save).toHaveBeenCalled()
+
+  describe "when a pane loses focus", ->
+    beforeEach ->
+      atom.config.set('autosave-plus.enabled', false)
+
+    it "suppresses autosave if the files doesn't exist", ->
+      document.body.focus()
+      expect(initialActiveItem.save).not.toHaveBeenCalled()
+      workspaceElement.focus()
+      expect(initialActiveItem.save).not.toHaveBeenCalled()
+
+      atom.config.set('autosave-plus.enabled', true)
+      originalPath = atom.workspace.getActiveTextEditor().getPath()
+      tmpPath = "#{originalPath}~"
+      fs.renameSync(originalPath, tmpPath)
+
+      expect(initialActiveItem.save).not.toHaveBeenCalled()
+      document.body.focus()
+      expect(initialActiveItem.save).not.toHaveBeenCalled()
+
+      fs.renameSync(tmpPath, originalPath)
