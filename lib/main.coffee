@@ -41,7 +41,7 @@ module.exports =
   autosavePaneItem: (paneItem) ->
     return false if @isExcludeScope(paneItem?.getGrammar?()?.scopeName)
     return false unless @isIncludeOnlyRepositoryPath(paneItem?.getURI?())
-    return false unless paneItem?.getPath()? and fs.isFileSync(paneItem.getPath())
+    return false unless paneItem?.getPath?()? and fs.isFileSync(paneItem.getPath())
     return true
 
   isExcludeScope: (scopeName) ->
