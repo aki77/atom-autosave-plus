@@ -31,6 +31,9 @@ describe "AutosavePlus", ->
     waitsForPromise ->
       atom.packages.activatePackage('language-git')
 
+    waitsForPromise ->
+      atom.packages.activatePackage('settings-view')
+
     runs ->
       atom.packages.emitter.emit 'did-activate-initial-packages'
       initialActiveItem = atom.workspace.getActiveTextEditor()
@@ -113,3 +116,15 @@ describe "AutosavePlus", ->
       expect(initialActiveItem.save).not.toHaveBeenCalled()
 
       fs.renameSync(tmpPath, originalPath)
+
+    it 'No Editable pane',  ->
+      atom.config.set('autosave-plus.enabled', true)
+      atom.config.set('autosave-plus.includeOnlyRepositoryPath', false)
+
+      waitsForPromise ->
+        atom.workspace.open('atom://config')
+
+      runs ->
+        atom.commands.dispatch(workspaceElement, 'core:close')
+        pane = atom.workspace.paneForURI('atom://config')
+        expect(pane).toBeUndefined()

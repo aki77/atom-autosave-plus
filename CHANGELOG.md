@@ -1,4 +1,7 @@
-## 0.5
+## 0.5.1
+* Fix Error on No Editable pane(#2)
+
+## 0.5.0
 * Don't autosave if file has been moved or deleted
 
 ## 0.4.1
