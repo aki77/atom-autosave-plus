@@ -1,3 +1,6 @@
+## 0.5.2
+* Clean up
+
 ## 0.5.1
 * Fix Error on No Editable pane(#2)
 
