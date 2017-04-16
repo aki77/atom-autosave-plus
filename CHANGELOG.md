@@ -1,3 +1,6 @@
+## 0.6.0
+* Use Service API
+
 ## 0.5.2
 * Clean up
 

@@ -15,32 +15,9 @@ module.exports =
       type: 'boolean'
       default: false
 
-  activate: ->
-    @subscriptions = new CompositeDisposable
-    @subscriptions.add atom.config.observe 'autosave-plus.enabled', (enabled) ->
-      atom.config.set('autosave.enabled', enabled, save: false)
-    @subscriptions.add atom.packages.onDidActivateInitialPackages =>
-      @subscriptions.add(@wrapAutosave())
-
-  deactivate: ->
-    @subscriptions.dispose()
-
-  wrapAutosave: ->
-    pack = atom.packages.enablePackage('autosave')
-    pack.activate()
-    autosave = pack.mainModule
-    original = autosave.autosavePaneItem
-
-    _.adviseBefore(autosave, 'autosavePaneItem', (paneItem) =>
-      @autosavePaneItem(paneItem)
-    )
-
-    new Disposable( -> autosave.autosavePaneItem = original)
-
-  autosavePaneItem: (paneItem) ->
-    return false if @isExcludeScope(paneItem?.getGrammar?()?.scopeName)
-    return false unless @isIncludeOnlyRepositoryPath(paneItem?.getURI?())
-    return true
+  consumeAutosave: ({dontSaveIf}) ->
+    dontSaveIf((paneItem) => @isExcludeScope(paneItem?.getGrammar?()?.scopeName))
+    dontSaveIf((paneItem) => !@isIncludeOnlyRepositoryPath(paneItem?.getURI?()))
 
   isExcludeScope: (scopeName) ->
     excludeGrammars = atom.config.get('autosave-plus.excludeGrammars')

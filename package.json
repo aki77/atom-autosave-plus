@@ -8,11 +8,15 @@
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
   },
-  "dependencies": {
-    "fs-plus": "^2.0.0",
-    "underscore-plus": "^1.5.0"
-  },
   "devDependencies": {
-    "temp": "~0.8.1"
+    "fs-plus": "^3.0.0",
+    "temp": "~0.8.3"
+  },
+  "consumedServices": {
+    "autosave": {
+      "versions": {
+        "1.0.0": "consumeAutosave"
+      }
+    }
   }
 }

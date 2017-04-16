@@ -16,8 +16,12 @@ describe "AutosavePlus", ->
     fs.moveSync(path.join(projectPath, 'git.git'), path.join(projectPath, '.git'))
     atom.project.setPaths([otherPath, projectPath])
 
+    atom.config.set('autosave.enabled', true)
     atom.config.set('autosave-plus.excludeGrammars', ['text.git-commit'])
     atom.config.set('autosave-plus.enabled', true)
+
+    waitsForPromise ->
+      atom.packages.activatePackage('autosave')
 
     waitsForPromise ->
       atom.packages.activatePackage('autosave-plus')
