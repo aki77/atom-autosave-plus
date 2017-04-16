@@ -1,4 +1,3 @@
-_ = require 'underscore-plus'
 {CompositeDisposable, Disposable} = require 'atom'
 
 module.exports =
